@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Trash2 } from "lucide-react";
 
 interface Party {
   id: string;
@@ -10,10 +11,18 @@ interface Party {
 
 export default function PartiesListPage() {
   const [parties, setParties] = useState<Party[]>([]);
-  useEffect(() => {
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  const fetchParties = () => {
     fetch("/parties")
       .then(res => res.json())
-      .then(setParties);
+      .then(setParties)
+      .catch(err => console.error("Erreur lors du chargement des partis:", err));
+  };
+  
+  useEffect(() => {
+    fetchParties();
   }, []);
 
   const [showForm, setShowForm] = useState(false);
@@ -37,11 +46,30 @@ export default function PartiesListPage() {
       setNom(""); setDescription(""); setLogoUrl("");
       setShowForm(false);
       // Rafraîchir la liste
-      fetch("/parties").then(res => res.json()).then(setParties);
+      fetchParties();
     } catch (err: unknown) {
-      setError(err.message || "Erreur inconnue");
+      const errorMessage = err instanceof Error ? err.message : "Erreur inconnue";
+      setError(errorMessage);
     }
     setCreating(false);
+  };
+  
+  const handleDelete = async (partyId: string) => {
+    setIsDeleting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/parties/${partyId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Erreur lors de la suppression du parti");
+      // Rafraîchir la liste après suppression
+      fetchParties();
+      setDeleteConfirm(null);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Erreur lors de la suppression";
+      setError(errorMessage);
+    }
+    setIsDeleting(false);
   };
 
   return (
@@ -75,6 +103,8 @@ export default function PartiesListPage() {
           </button>
         </form>
       )}
+      {error && <div className="text-red-500 text-sm mb-4" data-component-name="PartiesListPage">{error}</div>}
+      
       <ul className="space-y-4">
         {parties.map(party => (
           <li key={party.id} className="p-4 bg-white rounded-lg shadow flex items-center">
@@ -85,9 +115,40 @@ export default function PartiesListPage() {
               <h2 className="text-xl font-semibold">{party.nom}</h2>
               <p className="text-gray-700 text-sm">{party.description}</p>
             </div>
-            <Link to={`/parties/${party.id}`} className="ml-6 text-blue-600 hover:underline">Voir la fiche</Link>
+            <div className="flex items-center gap-3">
+              <Link to={`/parties/${party.id}`} className="text-blue-600 hover:underline">Voir la fiche</Link>
+              
+              {deleteConfirm === party.id ? (
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => handleDelete(party.id)} 
+                    disabled={isDeleting}
+                    className="bg-red-600 text-white text-sm px-2 py-1 rounded hover:bg-red-700 transition"
+                  >
+                    {isDeleting ? "Suppression..." : "Confirmer"}
+                  </button>
+                  <button 
+                    onClick={() => setDeleteConfirm(null)}
+                    className="bg-gray-300 text-gray-800 text-sm px-2 py-1 rounded hover:bg-gray-400 transition"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setDeleteConfirm(party.id)}
+                  className="text-red-500 hover:text-red-700 transition p-1"
+                  title="Supprimer ce parti"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+            </div>
           </li>
         ))}
+        {parties.length === 0 && (
+          <li className="p-4 bg-white rounded-lg shadow text-center text-gray-500">Aucun parti politique enregistré</li>
+        )}
       </ul>
     </div>
   );

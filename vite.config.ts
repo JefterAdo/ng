@@ -21,6 +21,16 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
+      },
+      '/parties': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/forces-faiblesses': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
       }
     },
   },
