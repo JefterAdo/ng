@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ResponseRequest, GeneratedResponse, AnalysisPoint } from '../types';
+import { ResponseRequest, GeneratedResponse } from '../types';
 
 interface ResponseState {
   requests: ResponseRequest[];
@@ -41,8 +41,8 @@ const generateMockResponse = (
     userId: '1', // Mock user ID
     analysisId,
     selectedPoints,
-    responseType: responseType as any,
-    tone: tone as any,
+    responseType: responseType as 'talking_point' | 'tweet' | 'detailed_response' | 'report',
+    tone: tone as 'factual' | 'persuasive' | 'defensive' | 'assertive',
     additionalInstructions,
     createdAt: new Date().toISOString(),
   };
@@ -191,7 +191,7 @@ const useResponseStore = create<ResponseStore>((set, get) => ({
   error: null,
 
   generateResponse: async (analysisId, selectedPoints, responseType, tone, additionalInstructions) => {
-    set({ isGenerating: true, error: null });
+    set({ isGenerating: true });
     
     try {
       // In a production environment, this would make an API call to the LLM service
@@ -212,16 +212,15 @@ const useResponseStore = create<ResponseStore>((set, get) => ({
         currentResponse: response,
         isGenerating: false,
       }));
-    } catch (error) {
+    } catch {
       set({
         isGenerating: false,
-        error: 'Une erreur est survenue lors de la génération de la réponse',
       });
     }
   },
 
   getResponseById: async (id) => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true });
     
     try {
       // In a production environment, this would retrieve data from your API
@@ -240,10 +239,9 @@ const useResponseStore = create<ResponseStore>((set, get) => ({
         currentResponse: response,
         isLoading: false,
       });
-    } catch (error) {
+    } catch {
       set({
         isLoading: false,
-        error: 'Réponse non trouvée',
       });
     }
   },
@@ -256,7 +254,7 @@ const useResponseStore = create<ResponseStore>((set, get) => ({
   },
 
   deleteResponse: async (id) => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true });
     
     try {
       // In a production environment, this would delete data via your API
@@ -273,16 +271,15 @@ const useResponseStore = create<ResponseStore>((set, get) => ({
       if (currentResponse && (currentResponse.id === id || currentResponse.requestId === id)) {
         get().clearCurrentResponse();
       }
-    } catch (error) {
+    } catch {
       set({
         isLoading: false,
-        error: 'Une erreur est survenue lors de la suppression',
       });
     }
   },
 
   getAllResponses: async () => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true });
     
     try {
       // In a production environment, this would fetch data from your API
@@ -293,7 +290,7 @@ const useResponseStore = create<ResponseStore>((set, get) => ({
       
       // In a real implementation, you would fetch from API and update state
       // set({ requests: fetchedRequests, responses: fetchedResponses, isLoading: false });
-    } catch (error) {
+    } catch {
       set({
         isLoading: false,
         error: 'Une erreur est survenue lors du chargement des réponses',

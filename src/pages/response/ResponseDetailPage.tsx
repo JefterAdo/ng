@@ -70,8 +70,8 @@ const ResponseDetailPage: React.FC = () => {
   
   const handleExport = () => {
     // Determine file extension and content type based on format
-    let extension = 'txt';
-    let contentType = 'text/plain';
+    const extension = 'txt';
+    const contentType = 'text/plain';
     
     // Create filename with timestamp
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');

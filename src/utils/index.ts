@@ -79,15 +79,15 @@ export function formatNumber(num: number): string {
 /**
  * Safely access nested object properties
  */
-export function getNestedValue<T>(obj: any, path: string, defaultValue: T): T {
+export function getNestedValue<T>(obj: Record<string, unknown>, path: string, defaultValue: T): T {
   const keys = path.split('.');
-  return keys.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : defaultValue), obj);
+  return keys.reduce((acc, key) => (acc && typeof acc === 'object' && acc[key] !== undefined ? acc[key] : defaultValue), obj) as T;
 }
 
 /**
  * Filter an array of objects by a search term
  */
-export function filterBySearchTerm<T extends Record<string, any>>(
+export function filterBySearchTerm<T extends Record<string, unknown>>( 
   items: T[],
   searchTerm: string,
   searchFields: (keyof T)[]

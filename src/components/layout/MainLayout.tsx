@@ -44,7 +44,7 @@ const MainLayout: React.FC = () => {
                   if (item.adminOnly && user?.role !== 'admin') return null;
                   
                   const isActive = location.pathname === item.path;
-                  const Icon = item.icon as any;
+                  const Icon = item.icon as React.ElementType;
                   
                   return (
                     <Link
@@ -133,7 +133,7 @@ const MainLayout: React.FC = () => {
               if (item.adminOnly && user?.role !== 'admin') return null;
               
               const isActive = location.pathname === item.path;
-              const Icon = item.icon as any;
+              const Icon = item.icon as React.ElementType;
               
               return (
                 <Link

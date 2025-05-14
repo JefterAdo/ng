@@ -18,6 +18,48 @@ export interface AuthState {
 }
 
 // Content Analysis Types
+export interface EDLSItem {
+  id: string;
+  title: string;
+  classification: EDLSClassification;
+  content: string; // Texte principal ou résumé
+  mediaUrl?: string; // Lien vers le média (fichier, image, etc.)
+  mediaFile?: {
+    name: string;
+    type: string;
+    data: string; // base64
+  };
+  actions: EDLSAction[];
+  assignedTo?: string[]; // IDs ou rôles des acteurs
+  status: "new" | "analyzed" | "responded" | "archived";
+  aiAnalysis?: {
+    summary: string;
+    keyPoints: string[];
+    sentiment?: string;
+    suggestedResponses?: string[];
+  };
+  humanValidated?: boolean; // Validation humaine de la suggestion IA
+  validatedBy?: string; // ID de l'utilisateur ayant validé
+  validationComment?: string; // Commentaire de validation
+  createdAt: string;
+  updatedAt: string;
+  history?: EDLSHistoryEntry[];
+}
+
+export interface EDLSAction {
+  type: 'assign' | 'validate' | 'generate_response' | 'mark_done' | 'archive';
+  userId: string;
+  timestamp: string;
+  details?: string;
+}
+
+export interface EDLSHistoryEntry {
+  action: string;
+  userId: string;
+  timestamp: string;
+  comment?: string;
+}
+
 export interface AnalysisRequest {
   id: string;
   userId: string;

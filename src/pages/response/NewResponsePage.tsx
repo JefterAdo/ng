@@ -82,7 +82,8 @@ const NewResponsePage: React.FC = () => {
       } else {
         navigate('/responses');
       }
-    } catch (err) {
+    } catch {
+
       setError('Une erreur est survenue lors de la génération de la réponse. Veuillez réessayer.');
     }
   };
@@ -156,8 +157,7 @@ const NewResponsePage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Select
                 label="Type de réponse"
-                placeholder="Sélectionnez le type de réponse"
-                options={RESPONSE_TYPES}
+                options={[{ value: '', label: 'Sélectionnez le type de réponse' }, ...RESPONSE_TYPES]}
                 value={responseType}
                 onChange={(e) => setResponseType(e.target.value)}
                 fullWidth
@@ -166,8 +166,7 @@ const NewResponsePage: React.FC = () => {
               
               <Select
                 label="Ton de la réponse"
-                placeholder="Sélectionnez le ton souhaité"
-                options={RESPONSE_TONES}
+                options={[{ value: '', label: 'Sélectionnez le ton de la réponse' }, ...RESPONSE_TONES]}
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
                 fullWidth

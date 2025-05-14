@@ -2,144 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --color-primary: 255 139 0;
-    --color-primary-light: 255 170 77;
-    --color-primary-dark: 204 111 0;
-    
-    --color-secondary: 22 132 250;
-    --color-secondary-light: 95 166 244;
-    --color-secondary-dark: 10 91 178;
-    
-    --color-accent: 0 154 102;
-    --color-accent-light: 26 200 138;
-    --color-accent-dark: 0 110 73;
-    
-    --color-success: 34 197 94;
-    --color-warning: 234 179 8;
-    --color-error: 239 68 68;
-    
-    --color-neutral-50: 249 250 251;
-    --color-neutral-100: 243 244 246;
-    --color-neutral-200: 229 231 235;
-    --color-neutral-300: 209 213 219;
-    --color-neutral-400: 156 163 175;
-    --color-neutral-500: 107 114 128;
-    --color-neutral-600: 75 85 99;
-    --color-neutral-700: 55 65 81;
-    --color-neutral-800: 31 41 55;
-    --color-neutral-900: 17 24 39;
-    --color-neutral-950: 9 13 20;
-  }
-  
-  body {
-    @apply bg-neutral-50 text-neutral-900 font-sans;
-  }
-  
-  .h1 {
-    @apply text-3xl font-bold text-neutral-900 leading-tight;
-  }
-  
-  .h2 {
-    @apply text-2xl font-bold text-neutral-900 leading-tight;
-  }
-  
-  .h3 {
-    @apply text-xl font-semibold text-neutral-900 leading-tight;
-  }
-  
-  .h4 {
-    @apply text-lg font-semibold text-neutral-900 leading-snug;
-  }
-  
-  p {
-    @apply text-base text-neutral-700 leading-relaxed;
-  }
+/* Réinitialisation des styles de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
-  }
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+
+body {
+  background-color: #F7F7F7;
+  color: #212121;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Couleurs RHDP */
+:root {
+  --color-primary: 255 121 0;
+  --color-primary-light: 255 179 71;
+  --color-primary-dark: 204 97 0;
   
-  .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-dark focus-visible:ring-primary;
-  }
+  --color-secondary: 0 154 68;
+  --color-secondary-light: 77 196 125;
+  --color-secondary-dark: 0 110 55;
   
-  .btn-secondary {
-    @apply bg-secondary text-white hover:bg-secondary-dark focus-visible:ring-secondary;
-  }
+  --color-success: 34 197 94;
+  --color-warning: 234 179 8;
+  --color-error: 239 68 68;
   
-  .btn-outline {
-    @apply border border-neutral-300 bg-transparent text-neutral-700 hover:bg-neutral-100 focus-visible:ring-neutral-400;
-  }
-  
-  .btn-ghost {
-    @apply bg-transparent text-neutral-700 hover:bg-neutral-100 focus-visible:ring-neutral-400;
-  }
-  
-  .card {
-    @apply rounded-lg border border-neutral-200 bg-white shadow-sm transition-all;
-  }
-  
-  .card-hover {
-    @apply hover:shadow-md hover:border-neutral-300;
-  }
-  
-  .input {
-    @apply flex h-10 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50;
-  }
-  
-  .textarea {
-    @apply flex min-h-[80px] w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50;
-  }
-  
-  .select {
-    @apply flex h-10 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50;
-  }
-  
-  .checkbox {
-    @apply h-4 w-4 rounded border-neutral-300 text-primary focus:ring-primary;
-  }
-  
-  .radio {
-    @apply h-4 w-4 border-neutral-300 text-primary focus:ring-primary;
-  }
-  
-  .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
-  }
-  
-  .badge-primary {
-    @apply bg-primary-light/20 text-primary-dark;
-  }
-  
-  .badge-secondary {
-    @apply bg-secondary-light/20 text-secondary-dark;
-  }
-  
-  .badge-success {
-    @apply bg-success/20 text-success;
-  }
-  
-  .badge-warning {
-    @apply bg-warning/20 text-warning;
-  }
-  
-  .badge-error {
-    @apply bg-error/20 text-error;
-  }
+  --color-neutral-50: 249 250 251;
+  --color-neutral-100: 243 244 246;
+  --color-neutral-200: 229 231 235;
+  --color-neutral-300: 209 213 219;
+  --color-neutral-400: 156 163 175;
+  --color-neutral-500: 107 114 128;
+  --color-neutral-600: 75 85 99;
+  --color-neutral-700: 55 65 81;
+  --color-neutral-800: 31 41 55;
+  --color-neutral-900: 17 24 39;
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideInUp {
@@ -154,12 +70,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 .animate-fade-in {
@@ -172,4 +84,37 @@
 
 .animate-pulse-slow {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loader RHDP */
+.rhdp-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #FF7900 0%, #FFF3E0 100%);
+  z-index: 9999;
+  transition: opacity 0.5s ease-out;
+}
+
+.rhdp-loader.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rhdp-loader-circle {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #FF7900;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

@@ -8,12 +8,12 @@ import Select from '../../components/ui/Select';
 import Badge from '../../components/ui/Badge';
 import useAnalysisStore from '../../store/analysis-store';
 import useResponseStore from '../../store/response-store';
-import { formatDate, formatRelativeTime, truncateText } from '../../utils';
+import { formatRelativeTime, truncateText } from '../../utils';
 import { HistoryItem } from '../../types';
 
 const HistoryPage: React.FC = () => {
-  const { requests: analyses, getAllAnalyses, isLoading: isAnalysisLoading } = useAnalysisStore();
-  const { responses, getAllResponses, isLoading: isResponseLoading } = useResponseStore();
+  const { requests: analyses, getAllAnalyses } = useAnalysisStore();
+  const { responses, getAllResponses } = useResponseStore();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('');
@@ -76,6 +76,8 @@ const HistoryPage: React.FC = () => {
         <h1 className="h1">Historique</h1>
       </div>
       
+      <div className="bg-white rounded-lg shadow p-4 mb-4">{null}</div>
+      
       <div className="bg-white rounded-lg shadow-sm border border-neutral-200 mb-6 p-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
@@ -95,9 +97,9 @@ const HistoryPage: React.FC = () => {
           <div className="flex items-center">
             <History className="h-4 w-4 text-neutral-400 mr-2" />
             <Select
-              placeholder="Type d'activité"
+              label="Type d'activité"
               options={[
-                { value: '', label: 'Toutes les activités' },
+                { value: '', label: 'Toutes les activités', disabled: true },
                 { value: 'analysis', label: 'Analyses' },
                 { value: 'response', label: 'Réponses' },
               ]}

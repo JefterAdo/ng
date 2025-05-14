@@ -15,7 +15,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginPage: React.FC = () => {
-  const { login, isLoading, error } = useAuthStore();
+  const { login, isLoading } = useAuthStore();
   const [loginError, setLoginError] = useState<string | null>(null);
   
   const {
@@ -34,7 +34,8 @@ const LoginPage: React.FC = () => {
     setLoginError(null);
     try {
       await login(data.email, data.password);
-    } catch (error) {
+    } catch {
+// error intentionally ignored (used for setLoginError only)
       setLoginError('Une erreur est survenue lors de la connexion');
     }
   };
@@ -47,7 +48,8 @@ const LoginPage: React.FC = () => {
       } else {
         await login('user@rhdp.ci', 'password');
       }
-    } catch (error) {
+    } catch {
+// error intentionally ignored (used for setLoginError only)
       setLoginError('Une erreur est survenue lors de la connexion');
     }
   };
@@ -75,9 +77,9 @@ const LoginPage: React.FC = () => {
           {...register('password')}
         />
         
-        {(loginError || error) && (
+        {loginError && (
           <div className="text-sm text-error">
-            {loginError || error}
+            {loginError}
           </div>
         )}
         

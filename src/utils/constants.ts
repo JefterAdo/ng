@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
   LOGOUT: '/auth/logout',
   USERS: '/users',
   ANALYSIS: '/analysis',
-  RESPONSES: '/responses',
+  RHDPCHAT: '/rhdpchat', // Anciennement RESPONSES
   HISTORY: '/history',
   DASHBOARD: '/dashboard',
 };
@@ -49,8 +49,10 @@ export const USER_ROLES = [
 // Navigation items
 export const NAV_ITEMS = [
   { label: 'Tableau de bord', path: '/dashboard', icon: LayoutDashboard },
-  { label: 'Analyse', path: '/analysis', icon: Search },
-  { label: 'Réponses', path: '/responses', icon: MessageSquare },
+  { label: 'Analyse de Contenu', path: '/analysis', icon: Search },
+  { label: 'RHDPchat', path: '/rhdpchat-public', icon: MessageSquare }, // Mis à jour pour utiliser la route publique
+  { label: 'Recherche RAG', path: '/search', icon: Search },
+  { label: 'Forces & Faiblesses', path: '/parties', icon: Search },
   { label: 'Historique', path: '/history', icon: History },
   { label: 'Utilisateurs', path: '/users', adminOnly: true, icon: Users },
 ];

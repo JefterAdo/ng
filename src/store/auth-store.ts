@@ -77,7 +77,8 @@ const useAuthStore = create<AuthStore>()(
               error: 'Identifiants invalides',
             });
           }
-        } catch (error) {
+        } catch {
+// error intentionally ignored (used for set)
           set({
             isLoading: false,
             error: 'Une erreur est survenue lors de la connexion',
@@ -85,7 +86,7 @@ const useAuthStore = create<AuthStore>()(
         }
       },
 
-      register: async (userData) => {
+      register: async () => { // userData intentionally unused for mock
         set({ isLoading: true, error: null });
         
         try {
@@ -95,7 +96,8 @@ const useAuthStore = create<AuthStore>()(
           // In a real app, you would create the user in your backend
           // For demo, just return success
           set({ isLoading: false });
-        } catch (error) {
+        } catch {
+// error intentionally ignored (used for set)
           set({
             isLoading: false,
             error: 'Une erreur est survenue lors de l\'inscription',

@@ -14,7 +14,7 @@ const NewAnalysisPage: React.FC = () => {
   const { submitContent, isAnalyzing } = useAnalysisStore();
   
   const [content, setContent] = useState('');
-  const [contentType, setContentType] = useState('');
+  const [contentType, setContentType] = useState<CONTENT_TYPES>('' as CONTENT_TYPES);
   const [source, setSource] = useState('');
   const [error, setError] = useState<string | null>(null);
   
@@ -43,14 +43,14 @@ const NewAnalysisPage: React.FC = () => {
       } else {
         navigate('/analysis');
       }
-    } catch (err) {
-      setError('Une erreur est survenue lors de l\'analyse. Veuillez réessayer.');
+    } finally {
+      // setLoading(false); // This line was not present in the original code, so I left it commented
     }
   };
   
   const handleClear = () => {
     setContent('');
-    setContentType('');
+    setContentType('' as CONTENT_TYPES);
     setSource('');
     setError(null);
   };
@@ -81,7 +81,6 @@ const NewAnalysisPage: React.FC = () => {
           <CardContent className="space-y-6">
             <Textarea
               label="Contenu à analyser"
-              placeholder="Collez ou saisissez ici le texte à analyser (article, critique, post, etc.)"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               fullWidth
@@ -92,17 +91,15 @@ const NewAnalysisPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Select
                 label="Type de contenu"
-                placeholder="Sélectionnez le type de contenu"
                 options={CONTENT_TYPES}
                 value={contentType}
-                onChange={(e) => setContentType(e.target.value)}
+                onChange={(e) => setContentType(e.target.value as CONTENT_TYPES)}
                 fullWidth
                 required
               />
               
               <Input
                 label="Source (optionnel)"
-                placeholder="Site web, journal, réseau social, etc."
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
                 fullWidth
