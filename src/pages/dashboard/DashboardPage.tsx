@@ -80,7 +80,7 @@ const DashboardPage: React.FC = () => {
             <Plus className="h-4 w-4 mr-2" />
             Nouvelle analyse
           </Button>
-          <Button as={Link} to="/rhdpchat-public" variant="outline"> 
+          <Button as={Link} to="/rhdpchat" variant="outline"> 
             <MessageSquare className="h-4 w-4 mr-2" />
             Ouvrir RHDPchat
           </Button>

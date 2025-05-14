@@ -13,12 +13,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:50544',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
       '/dashboard-summary': {
-        target: 'http://localhost:50544',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       }

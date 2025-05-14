@@ -3,10 +3,11 @@ from pydantic import BaseModel
 import os
 import httpx
 from dotenv import load_dotenv
+from pathlib import Path
+# On charge .env à la racine du projet, même si le backend est lancé depuis un sous-dossier
+load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
 
-load_dotenv()
-
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_KEY_RHDPCHAT = os.getenv("GROQ_API_KEY_RHDPCHAT")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 from forces_api import router as forces_router
@@ -22,10 +23,10 @@ class ChatResponse(BaseModel):
     model_used: str
 
 async def call_groq_api(query: str) -> str:
-    if not GROQ_API_KEY:
-        raise HTTPException(status_code=500, detail="Groq API key not configured.")
+    if not GROQ_API_KEY_RHDPCHAT:
+        raise HTTPException(status_code=500, detail="Groq API key for RHDPchat not configured. Veuillez définir GROQ_API_KEY_RHDPCHAT dans vos variables d'environnement.")
     headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Authorization": f"Bearer {GROQ_API_KEY_RHDPCHAT}",
         "Content-Type": "application/json",
     }
     payload = {

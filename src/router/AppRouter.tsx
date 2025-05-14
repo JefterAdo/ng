@@ -48,7 +48,7 @@ const AppRouter: React.FC = () => {
           </Route>
           
           {/* Public Routes - No Layout */}
-          <Route path="/rhdpchat-public" element={<RHDPchatPage />} />
+          <Route path="/rhdpchat" element={<RHDPchatPage />} />
           
           {/* App Routes */}
           <Route element={<MainLayout />}>

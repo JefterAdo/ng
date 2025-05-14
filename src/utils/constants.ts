@@ -50,7 +50,7 @@ export const USER_ROLES = [
 export const NAV_ITEMS = [
   { label: 'Tableau de bord', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Analyse de Contenu', path: '/analysis', icon: Search },
-  { label: 'RHDPchat', path: '/rhdpchat-public', icon: MessageSquare }, // Mis à jour pour utiliser la route publique
+  { label: 'RHDPchat', path: '/rhdpchat', icon: MessageSquare },
   { label: 'Recherche RAG', path: '/search', icon: Search },
   { label: 'Forces & Faiblesses', path: '/parties', icon: Search },
   { label: 'Historique', path: '/history', icon: History },
