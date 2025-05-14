@@ -1,12 +1,24 @@
 import uuid
 import json
+import os
+import re
 from datetime import date
 from typing import Dict, List, Optional
+from pathlib import Path
 
 from forces_models import PoliticalParty, StrengthWeakness
 
-DB_PARTIES_FILE = "parties.json"
-DB_SW_FILE = "strengths_weaknesses.json"
+# Utilisation de chemins absolus pour éviter les attaques par traversement de répertoire
+BASE_DIR = Path(__file__).parent.absolute()
+DB_PARTIES_FILE = os.path.join(BASE_DIR, "parties.json")
+DB_SW_FILE = os.path.join(BASE_DIR, "strengths_weaknesses.json")
+
+# Fonction de validation des entrées pour prévenir les injections
+def sanitize_input(text: str) -> str:
+    if not isinstance(text, str):
+        return ""
+    # Supprimer les caractères potentiellement dangereux
+    return re.sub(r'[<>"\\]', '', text)
 
 # Initialisation des "bases de données" en mémoire (seront chargées depuis les fichiers)
 political_parties_db: Dict[str, PoliticalParty] = {}
@@ -26,8 +38,19 @@ def _load_parties():
         political_parties_db = {} # Fichier corrompu ou vide
 
 def _save_parties():
-    with open(DB_PARTIES_FILE, 'w') as f:
-        json.dump({pid: party.model_dump(mode='json') for pid, party in political_parties_db.items()}, f, indent=2)
+    # Créer un fichier temporaire pour éviter la corruption en cas d'erreur
+    temp_file = f"{DB_PARTIES_FILE}.tmp"
+    try:
+        with open(temp_file, 'w') as f:
+            json.dump({pid: party.model_dump(mode='json') for pid, party in political_parties_db.items()}, f, indent=2)
+        # Remplacer le fichier original seulement si l'écriture a réussi
+        os.replace(temp_file, DB_PARTIES_FILE)
+    except Exception as e:
+        # Nettoyer en cas d'erreur
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
+        print(f"Erreur lors de la sauvegarde des partis: {e}")
+        raise
 
 def _load_sw():
     global strengths_weaknesses_db
@@ -45,8 +68,19 @@ def _load_sw():
         strengths_weaknesses_db = {} # Fichier corrompu ou vide
 
 def _save_sw():
-    with open(DB_SW_FILE, 'w') as f:
-        json.dump({sw_id: sw.model_dump(mode='json') for sw_id, sw in strengths_weaknesses_db.items()}, f, indent=2)
+    # Créer un fichier temporaire pour éviter la corruption en cas d'erreur
+    temp_file = f"{DB_SW_FILE}.tmp"
+    try:
+        with open(temp_file, 'w') as f:
+            json.dump({sw_id: sw.model_dump(mode='json') for sw_id, sw in strengths_weaknesses_db.items()}, f, indent=2)
+        # Remplacer le fichier original seulement si l'écriture a réussi
+        os.replace(temp_file, DB_SW_FILE)
+    except Exception as e:
+        # Nettoyer en cas d'erreur
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
+        print(f"Erreur lors de la sauvegarde des forces/faiblesses: {e}")
+        raise
 
 # Charger les données au démarrage du module
 _load_parties()
@@ -55,8 +89,17 @@ _load_sw()
 # --- CRUD pour PoliticalParty --- #
 
 def create_party(nom: str, description: str, logo_url: Optional[str] = None) -> PoliticalParty:
+    # Validation et nettoyage des entrées
+    nom_clean = sanitize_input(nom)
+    description_clean = sanitize_input(description)
+    logo_url_clean = sanitize_input(logo_url) if logo_url else None
+    
+    # Vérification supplémentaire pour l'URL du logo
+    if logo_url_clean and not logo_url_clean.startswith(("http://", "https://")):
+        logo_url_clean = None
+    
     party_id = str(uuid.uuid4())
-    party = PoliticalParty(id=party_id, nom=nom, description=description, logo_url=logo_url)
+    party = PoliticalParty(id=party_id, nom=nom_clean, description=description_clean, logo_url=logo_url_clean)
     political_parties_db[party_id] = party
     _save_parties()
     return party

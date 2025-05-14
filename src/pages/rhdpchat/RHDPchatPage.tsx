@@ -23,9 +23,21 @@ interface Message {
   text: string;
 }
 
+// Fonction pour assainir les entrées utilisateur et prévenir les attaques XSS
+function sanitizeInput(input: string): string {
+  return input
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .trim();
+}
+
 function cleanAIResponse(text: string): string {
   // Supprime la mention (Réponse générée par: groq-llama3-70b-8192) si présente
-  return text.replace(/\n?\(Réponse générée par: groq-llama3-70b-8192\)/g, '').trim();
+  const cleaned = text.replace(/\n?\(Réponse générée par: groq-llama3-70b-8192\)/g, '').trim();
+  // Ne pas assainir la réponse de l'IA car elle est affichée comme du texte, pas comme du HTML
+  return cleaned;
 }
 
 const RHDPchatPage: React.FC = () => {
@@ -59,22 +71,45 @@ const RHDPchatPage: React.FC = () => {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (inputValue.trim() === '') return;
+    // Validation des entrées
+    const trimmedInput = inputValue.trim();
+    if (trimmedInput === '') return;
+    
+    // Limite de taille pour éviter les attaques par déni de service
+    if (trimmedInput.length > 1000) {
+      setError('Votre message est trop long. Veuillez le limiter à 1000 caractères.');
+      setShowError(true);
+      return;
+    }
+    
     setError('');
     setShowError(false);
-    const newMessages: Message[] = [...messages, { sender: 'user', text: inputValue }];
+    
+    // Assainir l'entrée utilisateur pour prévenir les attaques XSS
+    const sanitizedInput = sanitizeInput(trimmedInput);
+    
+    const newMessages: Message[] = [...messages, { sender: 'user', text: sanitizedInput }];
     setMessages(newMessages);
-    const currentInput = inputValue;
     setInputValue('');
     setIsLoading(true);
+    
     try {
+      // Ajout d'un timeout pour éviter les requêtes qui durent trop longtemps
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 secondes max
+      
       const response = await fetch('/api/rhdpchat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Ajouter un en-tête anti-CSRF si nécessaire
+          // 'X-CSRF-Token': csrfToken,
         },
-        body: JSON.stringify({ query: currentInput }),
+        body: JSON.stringify({ query: sanitizedInput }),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`API error: ${response.status} - ${errorText}`);

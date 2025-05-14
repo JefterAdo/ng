@@ -39,12 +39,29 @@ const DashboardPage: React.FC = () => {
 
     const fetchSummaryData = async () => {
       try {
-        const response = await fetch('/dashboard-summary'); 
+        // Ajouter un timeout pour éviter les requêtes qui durent trop longtemps
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 secondes max
+        
+        const response = await fetch('/dashboard-summary', {
+          signal: controller.signal,
+          headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache'
+          }
+        }); 
+        
+        clearTimeout(timeoutId);
+        
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText || 'Erreur serveur'}`);
         }
+        
         const data: DashboardSummaryData = await response.json();
-        setSummaryData(data);
+        setSummaryData({
+          total_parties: data.total_parties || 0,
+          recent_sw: Array.isArray(data.recent_sw) ? data.recent_sw : []
+        });
       } catch (err) {
         if (err instanceof Error) {
           setSummaryError(err.message);
@@ -52,8 +69,15 @@ const DashboardPage: React.FC = () => {
           setSummaryError("Une erreur inconnue est survenue lors de la récupération du résumé.");
         }
         console.error("Erreur lors de la récupération du résumé du tableau de bord:", err);
+        
+        // Fournir des données par défaut en cas d'erreur pour éviter les erreurs d'affichage
+        setSummaryData({
+          total_parties: 0,
+          recent_sw: []
+        });
+      } finally {
+        setLoadingSummary(false);
       }
-      setLoadingSummary(false);
     };
 
     loadData();
@@ -292,9 +316,9 @@ const DashboardPage: React.FC = () => {
         </Card>
       </div>
 
-      {loadingSummary && <p>Chargement du résumé...</p>}
+      {loadingSummary && <p className="text-blue-500">Chargement du résumé...</p>}
       {summaryError && <p className="text-red-500">Erreur de chargement du résumé: {summaryError}</p>}
-      {summaryData && !loadingSummary && !summaryError && (
+      {summaryData && !loadingSummary && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Carte pour le nombre total de partis */}
           <div className="bg-white p-6 rounded-lg shadow-md">

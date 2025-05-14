@@ -41,8 +41,9 @@ async def call_groq_api(query: str) -> str:
             response = await client.post(GROQ_API_URL, json=payload, headers=headers, timeout=45.0)
             response.raise_for_status()
             data = response.json()
-            print("[GROQ DEBUG] Payload envoyé:", payload)
-            print("[GROQ DEBUG] Réponse brute:", data)
+            # Log sécurisé sans exposer les données sensibles
+            print(f"[GROQ INFO] Requête envoyée à {GROQ_API_URL}, statut: {response.status_code}")
+            # Ne pas logger la réponse complète qui peut contenir des informations sensibles
             return data["choices"][0]["message"]["content"]
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Erreur Groq: {e}")

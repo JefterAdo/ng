@@ -19,8 +19,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Autorise toutes les méthodes (GET, POST, etc.)
-    allow_headers=["*"],  # Autorise tous les headers
+    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Limiter aux méthodes nécessaires
+    allow_headers=["Content-Type", "Authorization"],  # Limiter aux headers nécessaires
 )
 
 app.include_router(forces_router)
